@@ -1,0 +1,1 @@
+# trafera-teammate-types
