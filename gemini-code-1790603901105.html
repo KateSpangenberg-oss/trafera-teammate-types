@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>What's Your Trafera Teammate Type?</title>
+  
+  <!-- HubSpot Forms Embed Script -->
+  <script src="https://js.hsforms.net/forms/embed/7667743.js" defer></script>
+  <script charset="utf-8" type="text/javascript" src="https://js.hsforms.net/forms/embed/v2.js"></script>
+
+  <!-- Google Font: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-dark: #002540;
+      --blue-primary: #1B8ECE;
+      --cyan-accent: #00AED7;
+      --card-bg: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #536479;
+      --card-highlight: #f0f7fd;
+      --card-border: #d4e8f5;
+      --radius-card: 24px;
+      --radius-btn: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: var(--navy-dark) !important;
+      min-height: 100vh !important;
+      width: 100% !important;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 15%, #003a63 0%, #002540 100%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Background & Confetti */
+    #ambient-canvas, #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    #ambient-canvas { z-index: 1; opacity: 0.45; }
+    #confetti-canvas { z-index: 99; }
+
+    /* Top Kiosk Bar */
+    .kiosk-bar {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .kiosk-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+    }
+
+    .kiosk-btn:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .kiosk-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* Main Container Wrapper */
+    .main-wrapper {
+      width: 100%;
+      max-width: 680px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .quiz-card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-card);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      padding: 44px 38px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Header Pill */
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #eaf5fc;
+      color: var(--navy-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+
+    .brand-pill svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--cyan-accent);
+    }
+
+    /* Screen Views & Transitions */
+    .screen {
+      display: none;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Typography */
+    h1.title {
+      color: var(--navy-dark);
+      font-size: 2.15rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      text-align: center;
+      letter-spacing: -0.5px;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      text-align: center;
+      margin-bottom: 30px;
+      max-width: 540px;
+      font-weight: 400;
+    }
+
+    /* Action Buttons */
+    .btn-action {
+      background: linear-gradient(135deg, var(--blue-primary) 0%, var(--cyan-accent) 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-btn);
+      padding: 18px 40px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0, 174, 215, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .btn-action:hover {
+      box-shadow: 0 10px 28px rgba(0, 174, 215, 0.45);
+    }
+
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+
+    /* Progress Indicators */
+    .progress-bar-wrapper {
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #e5ebf2;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 20%;
+      background: linear-gradient(90deg, var(--blue-primary), var(--cyan-accent));
+      border-radius: 6px;
+      transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .question-prompt {
+      color: var(--navy-dark);
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.38;
+      text-align: left;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    /* Options Grid */
+    .options-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .option-item {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-btn);
+      padding: 16px 20px;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--navy-dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.15s ease;
+    }
+
+    .option-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 8px;
+      background: #edf6fc;
+      color: var(--blue-primary);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .option-item:hover {
+      border-color: var(--cyan-accent);
+      background: #f7fcfe;
+    }
+
+    .option-item:active, .option-item.selected {
+      background: #eaf6fc;
+      border-color: var(--blue-primary);
+    }
+
+    .option-item:active .option-badge, .option-item.selected .option-badge {
+      background: var(--blue-primary);
+      color: #ffffff;
+    }
+
+    /* Result Presentation */
+    .result-image-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .result-image {
+      width: 100%;
+      max-width: 380px;
+      height: auto;
+      border-radius: 12px;
+      display: block;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .result-heading {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--navy-dark);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .result-bio {
+      color: var(--text-main);
+      font-size: 1.05rem;
+      line-height: 1.65;
+      margin-bottom: 26px;
+      text-align: left;
+      font-weight: 400;
+    }
+
+    .value-box {
+      background: var(--card-highlight);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px 24px;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .value-tag {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .value-highlight {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+    }
+
+    .values-note-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 18px 20px;
+      width: 100%;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+
+    .values-note-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .values-note-body {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--text-main);
+    }
+
+    /* HubSpot Form Container Card */
+    .hubspot-card-section {
+      width: 100%;
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 24px 20px;
+      margin-bottom: 26px;
+      text-align: left;
+    }
+
+    .hubspot-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--navy-dark);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .hubspot-card-header svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--cyan-accent);
+    }
+
+    .hubspot-card-subtext {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+
+    #hubspot-form-container {
+      width: 100%;
+      min-height: 80px;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    #hubspot-form-container iframe {
+      width: 100% !important;
+      border: none !important;
+    }
+
+    /* Start Screen Hero Visual */
+    .intro-banner {
+      width: 100%;
+      max-width: 380px;
+      margin-bottom: 24px;
+      animation: floatSmooth 4s ease-in-out infinite;
+    }
+
+    @keyframes floatSmooth {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    /* Kiosk Inactivity Modal */
+    .kiosk-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 37, 64, 0.88);
+      backdrop-filter: blur(6px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+      padding: 20px;
+    }
+    .kiosk-modal.show { display: flex; }
+    .kiosk-modal-content {
+      background: #fff;
+      padding: 32px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 600px) {
+      body {
+        padding: 12px 8px;
+      }
+      .quiz-card {
+        padding: 28px 18px;
+        border-radius: 20px;
+      }
+      h1.title {
+        font-size: 1.75rem;
+      }
+      .question-prompt {
+        font-size: 1.2rem;
+      }
+      .option-item {
+        font-size: 0.95rem;
+        padding: 14px 16px;
+      }
+      .btn-action {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Animated Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Top Right Kiosk Bar -->
+  <div class="kiosk-bar">
+    <button class="kiosk-btn" id="audio-toggle" title="Toggle Sound Effects" aria-label="Toggle Sound">
+      <svg id="audio-icon-on" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      <svg id="audio-icon-off" style="display:none;" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+    </button>
+    <button class="kiosk-btn" id="fs-toggle" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
+      <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+    </button>
+  </div>
+
+  <!-- Inactivity Timeout Warning Modal -->
+  <div id="kiosk-timeout-modal" class="kiosk-modal">
+    <div class="kiosk-modal-content">
+      <h3 style="font-size:1.5rem; color:var(--navy-dark); margin-bottom:10px;">Still there?</h3>
+      <p style="color:var(--text-muted); margin-bottom:20px;">The quiz will reset to the start screen in <b id="timeout-seconds" style="color:var(--cyan-accent);">10</b> seconds.</p>
+      <button class="btn-action" style="max-width:100%;" onclick="dismissTimeoutPrompt()">I'm still here!</button>
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+    <div class="quiz-card">
+
+      <!-- START SCREEN -->
+      <div id="screen-start" class="screen active">
+        <div class="brand-pill">
+          <svg viewBox="0 0 24 24"><path d="M4 3h16l-4 8 4 8H4l4-8-4-8z"/></svg>
+          Trafera &bull; Partner Summit 2026
+        </div>
+
+        <div class="intro-banner">
+          <img id="intro-hero-img" src="widescreenwhite.png" alt="Partner Summit 2026 - Better Together" style="width:100%; height:auto; border-radius:12px; display:block;">
+        </div>
+
+        <h1 class="title">Discover What Makes You Shine</h1>
+        <p class="subtitle">Our Core Values define who we are and how we show up every day. Take this quick quiz to discover the value that best reflects your strengths and the impact you make every day!</p>
+        <button class="btn-action" onclick="handleStartQuiz()">Start the quiz</button>
+      </div>
+
+      <!-- QUIZ SCREEN -->
+      <div id="screen-quiz" class="screen">
+        <div class="progress-bar-wrapper">
+          <div class="progress-meta">
+            <span id="progress-question-num">Question 1 of 5</span>
+            <span id="progress-percent">20%</span>
+          </div>
+          <div class="progress-track">
+            <div id="progress-indicator" class="progress-fill"></div>
+          </div>
+        </div>
+
+        <h2 id="quiz-question-title" class="question-prompt">Loading question...</h2>
+        <div id="options-container" class="options-stack"></div>
+      </div>
+
+      <!-- RESULT SCREEN -->
+      <div id="screen-result" class="screen">
+        <div class="brand-pill">
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          Official Trafera Result
+        </div>
+
+        <div class="result-image-wrapper">
+          <img id="result-img" class="result-image" src="" alt="Teammate Emblem">
+        </div>
+
+        <h1 id="result-type-title" class="result-heading">The Anchor</h1>
+        <p id="result-type-desc" class="result-bio">Description goes here...</p>
+
+        <div class="value-box">
+          <div class="value-tag">Your Top Trafera Value(s)</div>
+          <div id="result-value-name" class="value-highlight">Dependability</div>
+        </div>
+
+        <div class="values-note-card">
+          <div class="values-note-title">How You Bring Trafera's Values To Life</div>
+          <div id="result-framing-text" class="values-note-body">
+            Among all your other talents, you are someone others can rely on.
+          </div>
+        </div>
+
+        <!-- HubSpot Lead Capture Section -->
+        <div class="hubspot-card-section">
+          <div class="hubspot-card-header">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            <span>Email Your Results</span>
+          </div>
+          <p class="hubspot-card-subtext">Enter your email to receive your official badge, teammate breakdown, and values guide.</p>
+          <div id="hubspot-form-container"></div>
+        </div>
+
+        <button class="btn-action" onclick="handleRetakeQuiz()">Retake quiz</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    /* HubSpot Forms Mapping */
+    const HUBSPOT_PORTAL_ID = "7667743";
+    const HUBSPOT_REGION = "na1";
+    const HUBSPOT_FORM_IDS = {
+      Anchor: "1764fe9a-215c-4a9c-b501-472b4c24a2f2",
+      Compass: "99016ea2-fa17-4735-a1c4-789b1c767b18",
+      Catalyst: "03296c84-3b80-4818-a90d-e6a90ada49df",
+      Optimizer: "21d26ef1-1e14-41cf-98bf-01f0acdef6ee"
+    };
+
+    function renderHubSpotForm(winningType) {
+      const container = document.getElementById('hubspot-form-container');
+      if (!container) return;
+      container.innerHTML = '';
+      const formId = HUBSPOT_FORM_IDS[winningType];
+
+      if (window.hbspt && window.hbspt.forms && window.hbspt.forms.create) {
+        window.hbspt.forms.create({
+          region: HUBSPOT_REGION,
+          portalId: HUBSPOT_PORTAL_ID,
+          formId: formId,
+          target: "#hubspot-form-container"
+        });
+      } else {
+        const frame = document.createElement('div');
+        frame.className = 'hs-form-frame';
+        frame.setAttribute('data-region', HUBSPOT_REGION);
+        frame.setAttribute('data-form-id', formId);
+        frame.setAttribute('data-portal-id', HUBSPOT_PORTAL_ID);
+        container.appendChild(frame);
+      }
+    }
+
+    /* Audio Effects */
+    let audioCtx = null;
+    let isMuted = false;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.08, gainVal = 0.15) {
+      if (isMuted || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function soundTap() {
+      initAudio();
+      playTone(480, 'triangle', 0.06, 0.12);
+    }
+
+    function soundSelect() {
+      initAudio();
+      if (isMuted || !audioCtx) return;
+      try {
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.15);
+      } catch (e) {}
+    }
+
+    function soundFanfare() {
+      initAudio();
+      if (isMuted || !audioCtx) return;
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, index) => {
+        setTimeout(() => {
+          playTone(freq, 'triangle', 0.35, 0.16);
+        }, index * 90);
+      });
+    }
+
+    const audioToggleBtn = document.getElementById('audio-toggle');
+    const audioIconOn = document.getElementById('audio-icon-on');
+    const audioIconOff = document.getElementById('audio-icon-off');
+
+    audioToggleBtn.addEventListener('click', () => {
+      initAudio();
+      isMuted = !isMuted;
+      audioIconOn.style.display = isMuted ? 'none' : 'block';
+      audioIconOff.style.display = isMuted ? 'block' : 'none';
+      if (!isMuted) soundTap();
+    });
+
+    const fsToggleBtn = document.getElementById('fs-toggle');
+    fsToggleBtn.addEventListener('click', () => {
+      soundTap();
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    });
+
+    /* Questions & Options */
+    const quizQuestions = [
+      {
+        question: "How do you naturally contribute to a new project, work order, or initiative?",
+        options: [
+          { text: "You think back on a similar project and use what you learned to propose a new process to make it go even better this time", type: "optimizer" },
+          { text: "You turn the idea into an actual plan and start moving", type: "catalyst" },
+          { text: "You get everyone excited and on board", type: "compass" },
+          { text: "You make sure the basics are covered so nothing falls through the cracks", type: "anchor" }
+        ]
+      },
+      {
+        question: "A teammate is stuck on something tricky. How do you show up?",
+        options: [
+          { text: "You suggest a totally new way to approach it", type: "optimizer" },
+          { text: "You jump in and help push it across the finish line", type: "catalyst" },
+          { text: "You check in on how they're feeling, not just the problem", type: "compass" },
+          { text: "You ask them what you can take off their plate so they can focus", type: "anchor" }
+        ]
+      },
+      {
+        question: "Your team just reached a milestone, hit a goal, or closed out a big work order. What are you doing?",
+        options: [
+          { text: "Already dreaming up the next big things", type: "optimizer" },
+          { text: "Thinking about how to carry the momentum into what's next", type: "catalyst" },
+          { text: "Making sure credit goes to the right people", type: "compass" },
+          { text: "Documenting what worked so it can happen again", type: "anchor" }
+        ]
+      },
+      {
+        question: "How do you prefer to receive feedback?",
+        options: [
+          { text: "Give me the big picture — what should we be aiming for?", type: "optimizer" },
+          { text: "Just tell me what to fix, I'll get moving", type: "catalyst" },
+          { text: "I like a real conversation about it, not just a written note", type: "compass" },
+          { text: "Straightforward and consistent — no surprises", type: "anchor" }
+        ]
+      },
+      {
+        question: "What's most satisfying at the end of a workday?",
+        options: [
+          { text: "You made something a little bit better than it was yesterday", type: "optimizer" },
+          { text: "Crossing things off the list — visible progress", type: "catalyst" },
+          { text: "A good conversation or moment with a teammate", type: "compass" },
+          { text: "Knowing you did things the right way, not just the easy way", type: "anchor" }
+        ]
+      }
+    ];
+
+    const resultsCatalog = {
+      Anchor: {
+        title: "The Anchor",
+        image: "the-anchor@1900x.png",
+        values: "Dependability",
+        description: "You take ownership of your responsibilities and do what you said you would do, respond in a timely manner, produce quality work, communicate clearly, and encourage others to do the same.",
+        framing: "Among all your other talents, you are someone others can rely on."
+      },
+      Catalyst: {
+        title: "The Catalyst",
+        image: "the-catalyst@1900x.png",
+        values: "Action",
+        description: "You act with purpose, see what needs to be done and get moving, demonstrate initiative and proactive problem-solving, and encourage others to do the same.",
+        framing: "Among all your other talents, you are someone who sees a need and looks for a solution."
+      },
+      Compass: {
+        title: "The Compass",
+        image: "the-compass@1900x.png",
+        values: "Integrity + Connection",
+        description: "You can point others in the right direction, encourage doing the right thing, create meaningful relationships, and encourage an \"in it together\" attitude.",
+        framing: "Among all your other talents, you are guided by doing what's right and encourage collaboration."
+      },
+      Optimizer: {
+        title: "The Optimizer",
+        image: "the-optimizer@1900x.png",
+        values: "Growth",
+        description: "You have a curious attitude and appreciate continuous improvement, are willing to try new things, and encourage others to adapt to change.",
+        framing: "Among all your other talents, you support change and look for ways to learn and improve."
+      }
+    };
+
+    let currentQuestionIdx = 0;
+    let scores = { Anchor: 0, Catalyst: 0, Compass: 0, Optimizer: 0 };
+
+    function switchScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById(screenId);
+      if (target) target.classList.add('active');
+    }
+
+    function handleStartQuiz() {
+      soundSelect();
+      currentQuestionIdx = 0;
+      scores = { Anchor: 0, Catalyst: 0, Compass: 0, Optimizer: 0 };
+      switchScreen('screen-quiz');
+      renderQuestion();
+      resetInactivityTimer();
+    }
+
+    function renderQuestion() {
+      const q = quizQuestions[currentQuestionIdx];
+      const total = quizQuestions.length;
+
+      document.getElementById('progress-question-num').innerText = `Question ${currentQuestionIdx + 1} of ${total}`;
+      const percent = Math.round(((currentQuestionIdx + 1) / total) * 100);
+      document.getElementById('progress-percent').innerText = `${percent}%`;
+      document.getElementById('progress-indicator').style.width = `${percent}%`;
+
+      document.getElementById('quiz-question-title').innerText = q.question;
+
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
+
+      const letters = ['A', 'B', 'C', 'D'];
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('div');
+        btn.className = 'option-item';
+        btn.innerHTML = `
+          <div class="option-badge">${letters[idx] || (idx + 1)}</div>
+          <span style="flex:1;">${opt.text}</span>
+        `;
+        
+        btn.addEventListener('click', () => {
+          btn.classList.add('selected');
+          handleSelectOption(opt.type);
+        });
+
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSelectOption(type) {
+      soundTap();
+      resetInactivityTimer();
+
+      if (type === 'anchor') scores.Anchor++;
+      else if (type === 'catalyst') scores.Catalyst++;
+      else if (type === 'compass') scores.Compass++;
+      else if (type === 'optimizer') scores.Optimizer++;
+
+      setTimeout(() => {
+        currentQuestionIdx++;
+        if (currentQuestionIdx < quizQuestions.length) {
+          renderQuestion();
+        } else {
+          showFinalResults();
+        }
+      }, 190);
+    }
+
+    function showFinalResults() {
+      const order = ['Anchor', 'Catalyst', 'Compass', 'Optimizer'];
+      let winner = 'Anchor';
+      let maxScore = -1;
+
+      order.forEach(type => {
+        if (scores[type] > maxScore) {
+          maxScore = scores[type];
+          winner = type;
+        }
+      });
+
+      const data = resultsCatalog[winner];
+
+      const imgEl = document.getElementById('result-img');
+      imgEl.src = data.image;
+      imgEl.alt = data.title;
+
+      document.getElementById('result-type-title').innerText = data.title;
+      document.getElementById('result-type-desc').innerText = data.description;
+      document.getElementById('result-value-name').innerText = data.values;
+      document.getElementById('result-framing-text').innerText = data.framing;
+
+      renderHubSpotForm(winner);
+
+      switchScreen('screen-result');
+      soundFanfare();
+      triggerConfetti();
+    }
+
+    function handleRetakeQuiz() {
+      soundTap();
+      const container = document.getElementById('hubspot-form-container');
+      if (container) container.innerHTML = '';
+      switchScreen('screen-start');
+    }
+
+    /* Confetti Engine */
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    let confettiParticles = [];
+    let confettiAnimationId = null;
+
+    function resizeConfetti() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeConfetti);
+    resizeConfetti();
+
+    function triggerConfetti() {
+      if (confettiAnimationId) cancelAnimationFrame(confettiAnimationId);
+      confettiParticles = [];
+      const colors = ['#00AED7', '#1B8ECE', '#002540', '#38bdf8', '#10b981', '#f59e0b'];
+
+      const count = window.innerWidth < 600 ? 75 : 140;
+      for (let i = 0; i < count; i++) {
+        confettiParticles.push({
+          x: confettiCanvas.width / 2 + (Math.random() - 0.5) * 120,
+          y: confettiCanvas.height / 2 + (Math.random() - 0.5) * 60,
+          vx: (Math.random() - 0.5) * 18,
+          vy: (Math.random() - 1.2) * 16 - 2,
+          size: Math.random() * 8 + 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 12,
+          gravity: 0.38,
+          friction: 0.985,
+          opacity: 1
+        });
+      }
+      runConfettiLoop();
+    }
+
+    function runConfettiLoop() {
+      confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      let activeCount = 0;
+
+      confettiParticles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.vx *= p.friction;
+        p.rotation += p.rotationSpeed;
+        p.opacity -= 0.007;
+
+        if (p.opacity > 0 && p.y < confettiCanvas.height + 40) {
+          activeCount++;
+          confettiCtx.save();
+          confettiCtx.translate(p.x, p.y);
+          confettiCtx.rotate((p.rotation * Math.PI) / 180);
+          confettiCtx.globalAlpha = Math.max(0, p.opacity);
+          confettiCtx.fillStyle = p.color;
+          confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
+          confettiCtx.restore();
+        }
+      });
+
+      if (activeCount > 0) {
+        confettiAnimationId = requestAnimationFrame(runConfettiLoop);
+      } else {
+        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      }
+    }
+
+    /* Ambient Orbs */
+    const ambientCanvas = document.getElementById('ambient-canvas');
+    const ambientCtx = ambientCanvas.getContext('2d');
+    let ambientOrbs = [];
+
+    function initAmbient() {
+      ambientCanvas.width = window.innerWidth;
+      ambientCanvas.height = window.innerHeight;
+      ambientOrbs = [];
+      for (let i = 0; i < 18; i++) {
+        ambientOrbs.push({
+          x: Math.random() * ambientCanvas.width,
+          y: Math.random() * ambientCanvas.height,
+          radius: Math.random() * 40 + 20,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          alpha: Math.random() * 0.15 + 0.05
+        });
+      }
+    }
+    window.addEventListener('resize', initAmbient);
+    initAmbient();
+
+    function drawAmbient() {
+      ambientCtx.clearRect(0, 0, ambientCanvas.width, ambientCanvas.height);
+      ambientOrbs.forEach(orb => {
+        orb.x += orb.vx;
+        orb.y += orb.vy;
+
+        if (orb.x < -50) orb.x = ambientCanvas.width + 50;
+        if (orb.x > ambientCanvas.width + 50) orb.x = -50;
+        if (orb.y < -50) orb.y = ambientCanvas.height + 50;
+        if (orb.y > ambientCanvas.height + 50) orb.y = -50;
+
+        const grad = ambientCtx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.radius);
+        grad.addColorStop(0, `rgba(0, 174, 215, ${orb.alpha})`);
+        grad.addColorStop(1, 'rgba(0, 174, 215, 0)');
+
+        ambientCtx.fillStyle = grad;
+        ambientCtx.beginPath();
+        ambientCtx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2);
+        ambientCtx.fill();
+      });
+      requestAnimationFrame(drawAmbient);
+    }
+    drawAmbient();
+
+    /* Kiosk Timeout */
+    let idleTimer = null;
+    let countdownTimer = null;
+    let countdownSecs = 10;
+    const timeoutModal = document.getElementById('kiosk-timeout-modal');
+    const timeoutSecsEl = document.getElementById('timeout-seconds');
+
+    function resetInactivityTimer() {
+      clearTimeout(idleTimer);
+      clearInterval(countdownTimer);
+      if (timeoutModal) timeoutModal.classList.remove('show');
+
+      const isStartScreen = document.getElementById('screen-start').classList.contains('active');
+      if (!isStartScreen) {
+        idleTimer = setTimeout(promptInactivity, 80000);
+      }
+    }
+
+    function promptInactivity() {
+      countdownSecs = 10;
+      timeoutSecsEl.innerText = countdownSecs;
+      timeoutModal.classList.add('show');
+
+      countdownTimer = setInterval(() => {
+        countdownSecs--;
+        timeoutSecsEl.innerText = countdownSecs;
+        if (countdownSecs <= 0) {
+          clearInterval(countdownTimer);
+          dismissTimeoutPrompt();
+          switchScreen('screen-start');
+        }
+      }, 1000);
+    }
+
+    function dismissTimeoutPrompt() {
+      timeoutModal.classList.remove('show');
+      clearInterval(countdownTimer);
+      resetInactivityTimer();
+    }
+
+    ['touchstart', 'mousedown', 'mousemove', 'keydown'].forEach(evt => {
+      window.addEventListener(evt, resetInactivityTimer, { passive: true });
+    });
+  </script>
+</body>
+</html>
